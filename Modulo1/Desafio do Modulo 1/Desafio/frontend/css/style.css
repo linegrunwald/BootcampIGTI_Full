@@ -1,0 +1,62 @@
+body {
+  padding: 10px;
+}
+
+img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  margin-left: 10px;
+
+  border-radius: 50%;
+}
+
+#divContainer {
+  width: 1100px;
+  margin: 10pt;
+  padding: 15pt;
+  text-align: center;
+}
+
+.busca {
+  display: flex;
+  align-self: start;
+  align-items: flex-end;
+  text-align: left;
+}
+.busca label {
+  margin: 15pt;
+}
+
+#buttonBusca {
+  margin: 10pt;
+}
+
+.person {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.person div {
+  margin: 3pt;
+}
+
+.list {
+  width: 500px;
+  border: 1px solid grey;
+  padding: 5px;
+  border-radius: 10px;
+  margin-right: 10px;
+}
+
+#people {
+  float: left;
+}
+
+#estatisticas {
+  float: right;
+  text-align: left;
+}
+#estatisticas h4 {
+  text-align: center;
+}
