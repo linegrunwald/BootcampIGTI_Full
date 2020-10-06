@@ -71,12 +71,6 @@ const handleTyping = (event) => {
   }
 };
 
-const sortName = (lista) => {
-  lista.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  });
-};
-
 const renderListaPerson = () => {
   let replaceCurrent = new RegExp(`(${currentFilter})`, 'gi');
   let peopleHTML = `
@@ -142,4 +136,10 @@ const renderEstatisticas = () => {
 };
 const formatNumber = (number) => {
   return numberFormat.format(number);
+};
+
+const sortName = (lista) => {
+  lista.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
 };
