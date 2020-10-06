@@ -1,4 +1,5 @@
 node_modules
+.vscode
 cmder
 modulo-01-codigo-fonte-2
 *.pdf
