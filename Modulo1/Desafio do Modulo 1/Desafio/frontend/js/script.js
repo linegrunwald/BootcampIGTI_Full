@@ -1,11 +1,10 @@
 'use strict';
 
+let spinnerLoading = null;
 let divPeople = null;
 let divEstatisticas = null;
 let buttonBusca = null;
 let inputName = null;
-
-let numberFormat = null;
 
 let allPeople = [];
 let filteredPeople = [];
@@ -18,33 +17,53 @@ let totalMesculino = 0;
 let somaIdade = 0;
 let mediaIdade = 0;
 
-window.addEventListener('load', () => {
-  divPeople = document.querySelector('#divPeople');
-  divEstatisticas = document.querySelector('#divEstatisticas');
-  buttonBusca = document.querySelector('#buttonBusca');
-  inputName = document.querySelector('#inputName');
+let numberFormat = Intl.NumberFormat('pt-BR');
 
-  numberFormat = Intl.NumberFormat('pt-BR');
+window.addEventListener('load', async () => {
+  await fetchPeople();
 
-  fetchPeople();
+  mapElements();
+  addEvents();
+  enableControls();
 });
 
 async function fetchPeople() {
-  const res = await fetch('http://localhost:3002/');
+  const res = await fetch('http://localhost:3002/people');
   const json = await res.json();
-  allPeople = json.results.map((person) => {
-    const { name, picture, dob, gender } = person;
+  allPeople = json.map(({ login, name, picture, dob, gender }) => {
+    const { first, last } = name;
     return {
-      name: `${name.first} ${name.last}`,
+      id: login.uuid,
+      name: `${first} ${last}`,
       picture: picture.thumbnail,
       age: dob.age,
       gender,
     };
   });
+  sortName(allPeople);
+}
 
+const mapElements = () => {
+  divPeople = document.querySelector('#divPeople');
+  divEstatisticas = document.querySelector('#divEstatisticas');
+  buttonBusca = document.querySelector('#buttonBusca');
+  inputName = document.querySelector('#inputName');
+  spinnerLoading = document.querySelector('#spinnerLoading');
+};
+
+const addEvents = () => {
   buttonBusca.addEventListener('click', handleButtonClick);
   inputName.addEventListener('keyup', handleTyping);
-}
+};
+
+const enableControls = () => {
+  setTimeout(() => {
+    inputName.disabled = false;
+    inputName.focus();
+
+    spinnerLoading.classList.add('hidden');
+  }, 1000);
+};
 
 const handleButtonClick = () => {
   filteredPeople = allPeople.filter((person) =>
@@ -72,26 +91,25 @@ const handleTyping = (event) => {
 };
 
 const renderListaPerson = () => {
-  let replaceCurrent = new RegExp(`(${currentFilter})`, 'gi');
+  let replaceCurrent = new RegExp(`(${currentFilter.trim()})`, 'gi');
+  totalPeople = filteredPeople.length;
   let peopleHTML = `
   <div>
-    <h4> ${formatNumber(filteredPeople.length)} usuário(s) encontrado(s)</h4>
+    <h4> ${formatNumber(totalPeople)} usuário(s) encontrado(s)</h4>
   `;
   filteredPeople.forEach((person) => {
-    const { picture, name, age } = person;
+    const { picture, id, name, age } = person;
 
     const personHTML = `
     <div class='person'>
       <div>
-        <img src="${picture}" alt="${name}">
+        <img src="${picture}" alt="${id}">
       </div>
       <div>
         <spam>${name.replace(
           replaceCurrent,
           '<spam style="background-color: khaki">$1</spam>'
         )},</sapm>
-      </div>
-      <div>
         <spam>${age} anos</sapm>
       </div>
     </div>
@@ -109,7 +127,7 @@ const renderEstatisticas = () => {
     somaIdade = filteredPeople.reduce((accumulator, current) => {
       return accumulator + current.age;
     }, 0);
-    mediaIdade = somaIdade / filteredPeople.length;
+    mediaIdade = (somaIdade / filteredPeople.length || 0).toFixed(2);
     totalFeminino = filteredPeople.filter((person) => {
       return person.gender === 'female';
     }).length;
@@ -121,10 +139,12 @@ const renderEstatisticas = () => {
     <div>
       <h4>Estatísticas:</h4>
       <ul>
-        <li><strong>Sexo masculino:</strong> ${totalMesculino}</li> 
-        <li><strong>Sexo feminino:</strong> ${totalFeminino}</li> 
-        <li><strong>Some idades:</strong> ${somaIdade}</li> 
-        <li><strong>Média Idades:</strong> ${mediaIdade}</li> 
+        <li><strong>Sexo masculino:</strong> ${formatNumber(
+          totalMesculino
+        )}</li> 
+        <li><strong>Sexo feminino:</strong> ${formatNumber(totalFeminino)}</li> 
+        <li><strong>Soma idades:</strong> ${formatNumber(somaIdade)}</li> 
+        <li><strong>Média Idades:</strong> ${formatNumber(mediaIdade)}</li> 
       </ul>
     </div>
   `;

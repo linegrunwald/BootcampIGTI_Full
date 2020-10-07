@@ -11,6 +11,10 @@ img {
   border-radius: 50%;
 }
 
+.hidden {
+  display: none;
+}
+
 #divContainer {
   width: 1100px;
   margin: 10pt;
@@ -25,11 +29,12 @@ img {
   text-align: left;
 }
 .busca label {
-  margin: 15pt;
+  margin: 10pt;
 }
 
 #buttonBusca {
   margin: 10pt;
+  text-align: center;
 }
 
 .person {
