@@ -4,5 +4,5 @@ cmder
 modulo-01-codigo-fonte-2
 *.pdf
 *.txt
-Estados/*.json
-!Estados/.gitkeep
+**/Estados/*
+!**/Estados/.gitkeep
