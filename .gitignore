@@ -6,3 +6,4 @@ modulo-01-codigo-fonte-2
 *.txt
 **/Estados/*
 !**/Estados/.gitkeep
+aulasProfessor
