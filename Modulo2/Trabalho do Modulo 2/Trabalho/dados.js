@@ -29,7 +29,7 @@ const criarCidadesPorEstado = async () => {
     const promises = estados.map(async (estado) => {
       const cidadesEstado = cidades.filter((cidade) => cidade.Estado === estado.ID);
       await fs.writeFile(
-        './Estados/' + estado.Sigla + '.json',
+        `./Estados/${estado.Sigla}.json`,
         JSON.stringify(cidadesEstado)
       );
     });
@@ -42,7 +42,7 @@ const criarCidadesPorEstado = async () => {
 const readArquivoEstado = async (uf) => {
   try {
     const cidadesUf = JSON.parse(
-      await fs.readFile('./Estados/' + uf.toUpperCase() + '.json', "utf-8")
+      await fs.readFile(`./Estados/${uf.toUpperCase()}.json`, "utf-8")
     );
     return cidadesUf;
   } catch (error) {
@@ -76,11 +76,12 @@ export const coutCidadesEstado = async () => {
 
 export const top5MaisCidades = async () => {
   try {
-    let top5 = [];
+    const top5 = [];
 
-    for (let i = 0; i < 5; i++) {
-      top5.push(`${jsonCountCidades[i].UF} - ${jsonCountCidades[i].CountCidades}`);
-    }
+    jsonCountCidades.slice(0, 5).forEach(countCidade => {
+      top5.push(`${countCidade.UF} - ${countCidade.CountCidades}`);
+    })
+
     console.log(`TOP 5 Mais cidades: ${JSON.stringify(top5)}`);
   } catch (error) {
     console.log(error);
@@ -89,11 +90,12 @@ export const top5MaisCidades = async () => {
 
 export const top5MenosCidades = async () => {
   try {
-    let top5 = [];
+    const top5 = [];
 
-    for (let i = jsonCountCidades.length - 5; i < jsonCountCidades.length; i++) {
-      top5.push(`${jsonCountCidades[i].UF} - ${jsonCountCidades[i].CountCidades}`);
-    }
+    jsonCountCidades.slice(-5).forEach(countCidade => {
+      top5.push(`${countCidade.UF} - ${countCidade.CountCidades}`);
+    })
+
     console.log(`TOP 5 Menos cidades: ${JSON.stringify(top5)}`);
   } catch (error) {
     console.log(error);
@@ -106,7 +108,6 @@ const maiorNomeCidade = async (uf) => {
     const maiorNome = cidadesUf
       .sort((a, b) => a.Nome.localeCompare(b.Nome))
       .sort((a, b) => b.Nome.length - a.Nome.length)[0];
-    console.log(maiorNome.Nome);
 
     return maiorNome.Nome;
   } catch (error) {
